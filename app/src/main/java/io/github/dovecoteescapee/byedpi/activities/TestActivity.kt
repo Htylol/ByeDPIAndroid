@@ -14,8 +14,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import io.github.dovecoteescapee.byedpi.R
@@ -204,13 +204,6 @@ class TestActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateCmdInPreferences(cmd: String) {
-        val sharedPreferences = getPreferences()
-        val editor = sharedPreferences.edit()
-        editor.putString("byedpi_cmd_args", cmd)
-        editor.apply()
-    }
-
     private fun appendTextToResults(text: String) {
         resultsTextView.append(text)
 
@@ -223,11 +216,23 @@ class TestActivity : AppCompatActivity() {
 
     private fun appendLinkToResults(text: String) {
         val spannableString = SpannableString(text)
+        val options = arrayOf(
+            getString(R.string.cmd_history_apply),
+            getString(R.string.cmd_history_copy)
+        )
 
         spannableString.setSpan(
             object : ClickableSpan() {
                 override fun onClick(widget: View) {
-                    copyToClipboard(text.trim())
+                    AlertDialog.Builder(this@TestActivity)
+                        .setTitle(getString(R.string.cmd_history_menu))
+                        .setItems(options) { _, which ->
+                            when (which) {
+                                0 -> updateCmdInPreferences(text.trim())
+                                1 -> copyToClipboard(text.trim())
+                            }
+                        }
+                        .show()
                 }
             },
             0,
@@ -250,11 +255,17 @@ class TestActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateCmdInPreferences(cmd: String) {
+        val sharedPreferences = getPreferences()
+        val editor = sharedPreferences.edit()
+        editor.putString("byedpi_cmd_args", cmd)
+        editor.apply()
+    }
+
     private fun copyToClipboard(text: String) {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("command", text)
         clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, getString(R.string.test_cmd_copied), Toast.LENGTH_SHORT).show()
     }
 
     private suspend fun checkSiteAccessibility(site: String): Boolean {
