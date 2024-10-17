@@ -49,6 +49,8 @@ class TestActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_proxy_test)
 
+        originalCmdArgs = getPreferences().getString("byedpi_cmd_args", null)
+
         startStopButton = findViewById(R.id.startStopButton)
         resultsTextView = findViewById(R.id.resultsTextView)
         progressTextView = findViewById(R.id.progressTextView)
@@ -66,18 +68,15 @@ class TestActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            val domainGenerator = GoogleVideoUtils()
-            val autoGCS = domainGenerator.generateGoogleVideoDomain()
+            val googleVideoDomain = GoogleVideoUtils().generateGoogleVideoDomain()
 
-            if (autoGCS != null) {
-                (sites as MutableList<String>).add(autoGCS)
-                Log.i("TestActivity", "Added auto-generated Google domain: $autoGCS")
+            if (googleVideoDomain != null) {
+                (sites as MutableList<String>).add(googleVideoDomain)
+                Log.i("TestActivity", "Added auto-generated Google domain: $googleVideoDomain")
             } else {
                 Log.e("TestActivity", "Failed to generate Google domain")
             }
         }
-
-        originalCmdArgs = getPreferences().getString("byedpi_cmd_args", null)
 
         startStopButton.setOnClickListener {
             if (isTesting) {
@@ -108,32 +107,8 @@ class TestActivity : AppCompatActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun updateCmdInPreferences(cmd: String) {
-        val sharedPreferences = getPreferences()
-        val editor = sharedPreferences.edit()
-        editor.putString("byedpi_cmd_args", cmd)
-        editor.apply()
-    }
-
-    private fun enableCmdInPreferences() {
-        val sharedPreferences = getPreferences()
-        val editor = sharedPreferences.edit()
-        editor.putBoolean("byedpi_enable_cmd_settings", true)
-        editor.apply()
-    }
-
     private fun getByeDpiPreferences(): ByeDpiProxyPreferences =
         ByeDpiProxyPreferences.fromSharedPreferences(getPreferences())
-
-    private fun loadSitesFromFile(): List<String> {
-        val inputStream = assets.open("sites.txt")
-        return inputStream.bufferedReader().useLines { it.toList() }
-    }
-
-    private fun loadCmdsFromFile(): List<String> {
-        val inputStream = assets.open("cmds.txt")
-        return inputStream.bufferedReader().useLines { it.toList() }
-    }
 
     private fun startTesting() {
         isTesting = true
@@ -142,7 +117,6 @@ class TestActivity : AppCompatActivity() {
         progressTextView.text = ""
 
         clearLogFile()
-        enableCmdInPreferences()
 
         testJob = lifecycleScope.launch {
             val successfulCmds = mutableListOf<Pair<String, Int>>()
@@ -216,6 +190,13 @@ class TestActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateCmdInPreferences(cmd: String) {
+        val sharedPreferences = getPreferences()
+        val editor = sharedPreferences.edit()
+        editor.putString("byedpi_cmd_args", cmd)
+        editor.apply()
+    }
+
     private fun appendTextToResults(text: String) {
         val scrollView = findViewById<ScrollView>(R.id.scrollView)
 
@@ -244,10 +225,10 @@ class TestActivity : AppCompatActivity() {
                 connection.readTimeout = 2000
 
                 val responseCode = connection.responseCode
-                Log.i("CheckSite", "Response $site: $responseCode")
+                Log.i("CheckSite", "Good response $site ($responseCode)")
                 true
             } catch (e: Exception) {
-                Log.e("CheckSite", "Error $site: proxy", e)
+                Log.e("CheckSite", "Error response $site")
                 false
             }
         }
@@ -322,6 +303,16 @@ class TestActivity : AppCompatActivity() {
                 false
             }
         }
+    }
+
+    private fun loadSitesFromFile(): List<String> {
+        val inputStream = assets.open("sites.txt")
+        return inputStream.bufferedReader().useLines { it.toList() }
+    }
+
+    private fun loadCmdsFromFile(): List<String> {
+        val inputStream = assets.open("cmds.txt")
+        return inputStream.bufferedReader().useLines { it.toList() }
     }
 
     private fun saveLogToFile(log: String) {
