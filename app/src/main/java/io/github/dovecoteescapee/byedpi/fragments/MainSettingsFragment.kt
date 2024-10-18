@@ -11,6 +11,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.preference.*
 import io.github.dovecoteescapee.byedpi.BuildConfig
 import io.github.dovecoteescapee.byedpi.R
+import io.github.dovecoteescapee.byedpi.activities.TestActivity
 import io.github.dovecoteescapee.byedpi.data.Mode
 import io.github.dovecoteescapee.byedpi.utility.AccessibilityUtils
 import io.github.dovecoteescapee.byedpi.services.AutoStartAccessibilityService
@@ -76,9 +77,8 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
                 true
             }
 
-        val switchCommandLineSettings = findPreferenceNotNull<SwitchPreference>(
-            "byedpi_enable_cmd_settings"
-        )
+        val accessibilityStatusPref = findPreferenceNotNull<Preference>("accessibility_service_status")
+        val switchCommandLineSettings = findPreferenceNotNull<SwitchPreference>("byedpi_enable_cmd_settings")
 
         val uiSettings = findPreferenceNotNull<Preference>("byedpi_ui_settings")
         val cmdSettings = findPreferenceNotNull<Preference>("byedpi_cmd_settings")
@@ -97,23 +97,20 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
-        findPreferenceNotNull<Preference>("version").summary = BuildConfig.VERSION_NAME
-
-        val accessibilityStatusPref = findPreference<Preference>("accessibility_service_status")
-        accessibilityStatusPref?.setOnPreferenceClickListener {
+        accessibilityStatusPref.setOnPreferenceClickListener {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             startActivity(intent)
             true
         }
 
-        val selectedApps = findPreference<Preference>("selected_apps")
-        selectedApps?.setOnPreferenceClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.settings, AppSelectionFragment())
-                .addToBackStack(null)
-                .commit()
-            true
-        }
+        findPreferenceNotNull<Preference>("proxy_test")
+            .setOnPreferenceClickListener {
+                val intent = Intent(context, TestActivity::class.java)
+                startActivity(intent)
+                true
+            }
+
+        findPreferenceNotNull<Preference>("version").summary = BuildConfig.VERSION_NAME
 
         updateAccessibilityStatus(accessibilityStatusPref)
         updatePreferences()

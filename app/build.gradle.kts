@@ -8,11 +8,11 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "io.github.dovecoteescapee.byedpi"
+        applicationId = "io.github.romanvht.byedpi"
         minSdk = 21
         targetSdk = 34
         versionCode = 10
-        versionName = "1.3.7"
+        versionName = "1.3.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
