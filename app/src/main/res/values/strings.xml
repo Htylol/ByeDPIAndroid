@@ -17,6 +17,7 @@
     <string name="reset_settings">Сбросить</string>
     <string name="logs_failed">Не удалось собрать логи</string>
     <string name="proxy_address">%1$s:%2$s</string>
+    <string name="lang_settings">Язык</string>
     <string name="theme_settings">Тема</string>
     <string name="mode_setting">Режим</string>
     <string name="dbs_ip_setting">DNS</string>
