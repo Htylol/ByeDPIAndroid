@@ -6,15 +6,20 @@
 --split 2 --disorder 7
 -o 2 --auto=t,r,a,s -d 2
 -q1+s -s25+s -o5+s f-1-S
+-q1+s -s29+s -o5+s f-1-S
 -s1 -O3 -q1+s -s25+s -t8
+-s1 -O3 -q1+s -s29+s -t8
 --disoob 2 --tlsrec 3+sni
 -q1+s -s25+s -o5+s f-1 -S
 -q1+s -s29+s -o5+s f-1 -S
 -q1+s -s25+s -o5+s -f-1 -S
+-q1+s -s29+s -o5+s -f-1 -S
 -q1+s -s25+s -o5+s f-1 -S -As
+-q1+s -s29+s -o5+s f-1 -S -As
 -s1 -q1 -Y -At -f-1 -r1+s -As
 --disoob 2+sni --fake 517 --ttl 5
 -n vk.com -q 1+s -O 1 -s 25+s -t 5
+-n vk.com -q 1+s -O 1 -s 29+s -t 5
 -s0 -o1 -Ar -o1 -At -f-1 -r1+s -As
 -s1 -o1 -Ar -o1 -At -f-1 -r1+s -As
 -s 2 -r 1+s -r 1+h -o 2 -f -1 -t 4
@@ -27,8 +32,8 @@
 -n www.google.com -d 1+s -O 1 -s 25+s -t 5
 -n www.google.com -q 1+s -O 1 -s 29+s -t 5
 -n www.google.com -q 2+s -O 1 -s 25+s -t 5
+-n www.google.com -q 2+s -O 1 -s 29+s -t 5
 --split 2 --disoob 3+sni --fake 517 --ttl 5
---split 2 --disorder 3+sni --fake -1 --ttl 5
 --split 2 --disorder 3+sni --fake -1 --ttl 5
 -s0 -o1 -d1 -r1+s -Ar -o1 -At -f-1 -r1+s -As
 --disoob 3+sni --split -1+host --tlsrec 1+sni
