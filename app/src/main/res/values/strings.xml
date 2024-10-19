@@ -108,4 +108,11 @@
     <string name="test_good_cmds">Команды с вероятностью успеха более 50%</string>
     <string name="test_complete">Проверка завершена</string>
     <string name="test_complete_info">Нажмите на команду, чтобы скопировать ее или применить</string>
+    <string name="test_settings_gdomain">Добавлять ближайший GoogleVideo к тестированию</string>
+    <string name="test_settings_fulllog">Расширенный лог с выводом ответа хостов</string>
+    <string name="test_settings_logclickable">Выводить все команды в тесте кликабельными</string>
+    <string name="test_settings_userdomains">Использовать свой список доменов</string>
+    <string name="test_settings_domains">Список доменов</string>
+    <string name="test_settings_usercommands">Использовать свой список команд</string>
+    <string name="test_settings_commands">Список команд</string>
 </resources>
